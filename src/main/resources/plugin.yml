@@ -4,3 +4,4 @@ main: me.saif.betterenderchests.VariableEnderChests
 author: minion325
 api-version: 1.13
 softdepend: [PlaceholderAPI, ChestSort, ShowItem, InteractiveChat]
+folia-supported: true

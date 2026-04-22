@@ -71,7 +71,7 @@ public class ConversionCommand extends PluginCommand {
 
         if (this.confirmMap.get(sender) != converter) {
             this.confirmMap.put(sender, converter);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> confirmMap.remove(sender), 100L);
+            this.plugin.getTaskScheduler().runTaskLater(() -> confirmMap.remove(sender), 100L);
             messenger.sendMessage(sender, MessageKey.CONFIRM_CONVERTER);
             return;
         }
@@ -87,12 +87,14 @@ public class ConversionCommand extends PluginCommand {
         });
 
         success.thenAccept(aBoolean -> {
-            if (aBoolean)
-                messenger.sendMessage(sender, MessageKey.CONVERSION_SUCCESS);
-            else
-                messenger.sendMessage(sender, MessageKey.CONVERSION_FAILURE);
+            this.plugin.getTaskScheduler().runTask(() -> {
+                if (aBoolean)
+                    messenger.sendMessage(sender, MessageKey.CONVERSION_SUCCESS);
+                else
+                    messenger.sendMessage(sender, MessageKey.CONVERSION_FAILURE);
 
-            this.plugin.getConverterManager().setConverting(false);
+                this.plugin.getConverterManager().setConverting(false);
+            });
         });
     }
 }

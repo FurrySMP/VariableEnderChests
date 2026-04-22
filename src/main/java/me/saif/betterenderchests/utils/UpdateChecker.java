@@ -1,8 +1,7 @@
 package me.saif.betterenderchests.utils;
 
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
+import me.saif.betterenderchests.VariableEnderChests;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -14,16 +13,16 @@ import java.util.function.Consumer;
 // From: https://www.spigotmc.org/wiki/creating-an-update-checker-that-checks-for-updates
 public class UpdateChecker {
 
-    private final JavaPlugin plugin;
+    private final VariableEnderChests plugin;
     private final int resourceId;
 
-    public UpdateChecker(JavaPlugin plugin, int resourceId) {
+    public UpdateChecker(VariableEnderChests plugin, int resourceId) {
         this.plugin = plugin;
         this.resourceId = resourceId;
     }
 
     public void getVersion(final Consumer<String> consumer) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+        this.plugin.getTaskScheduler().runTaskAsynchronously(() -> {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.resourceId).openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
                     consumer.accept(scanner.next());

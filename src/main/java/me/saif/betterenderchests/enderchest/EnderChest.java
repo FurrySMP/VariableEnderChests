@@ -1,6 +1,5 @@
 package me.saif.betterenderchests.enderchest;
 
-import me.saif.betterenderchests.hooks.ChestSortHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -8,7 +7,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.*;
 
@@ -56,8 +54,8 @@ public class EnderChest implements InventoryHolder {
         this.retrievalInventory = Bukkit.createInventory(this.retrivalHolder, retrievalSize == 0 ? 9 : retrievalSize, retrievalSize == 0 ? "Nothing to retrieve" : RETRIEVAL_NAME);
         this.retrivalHolder.setInventory(this.retrievalInventory);
 
-        ChestSortHook.setSortable(this.inventory);
-        ChestSortHook.setUnsortable(this.retrievalInventory);
+        //ChestSortHook.setSortable(this.inventory);
+        //ChestSortHook.setUnsortable(this.retrievalInventory);
 
         populateInventory();
     }
@@ -82,17 +80,17 @@ public class EnderChest implements InventoryHolder {
         updateContentsArray();
         List<HumanEntity> chestViewers = new ArrayList<>(this.inventory.getViewers());
         List<HumanEntity> retrievalViewers = new ArrayList<>(this.retrievalInventory.getViewers());
-        ChestSortHook.setUnsortable(this.inventory);
+        //ChestSortHook.setUnsortable(this.inventory);
 
         this.inventory = Bukkit.createInventory(this, rows * 9, this.inventoryNames.get(rows));
-        ChestSortHook.setSortable(this.inventory);
+        //ChestSortHook.setSortable(this.inventory);
 
         int retrievalSize = 54 - lastNumRows * 9;
 
         this.retrievalInventory = Bukkit.createInventory(this.retrivalHolder, retrievalSize == 0 ? 9 : retrievalSize, retrievalSize == 0 ? "Nothing to retrieve" : this.retrievalName);
         this.retrivalHolder.setInventory(this.retrievalInventory);
 
-        ChestSortHook.setUnsortable(this.retrievalInventory);
+        //ChestSortHook.setUnsortable(this.retrievalInventory);
 
         populateInventory();
         for (HumanEntity viewer : chestViewers) {

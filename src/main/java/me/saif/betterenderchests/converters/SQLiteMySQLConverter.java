@@ -74,7 +74,7 @@ public class SQLiteMySQLConverter extends Converter {
             this.plugin.getConfig().set("database.mysql", true);
             this.plugin.saveConfig();
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> Bukkit.getPluginManager().disablePlugin(this.plugin));
+            this.plugin.getTaskScheduler().runTask(() -> Bukkit.getPluginManager().disablePlugin(this.plugin));
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);

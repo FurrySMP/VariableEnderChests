@@ -12,7 +12,6 @@ import me.saif.betterenderchests.data.database.SQLiteDatabase;
 import me.saif.betterenderchests.enderchest.EnderChestClickListener;
 import me.saif.betterenderchests.enderchest.EnderChestManager;
 import me.saif.betterenderchests.enderchest.EnderChestRetrieverClickListener;
-import me.saif.betterenderchests.hooks.ChestSortHook;
 import me.saif.betterenderchests.hooks.InteractiveChatHook;
 import me.saif.betterenderchests.hooks.PAPIEnderChestHook;
 import me.saif.betterenderchests.hooks.ShowItemHook;
@@ -26,9 +25,11 @@ import me.saif.betterenderchests.lang.inventory.packetinterceptor.PacketIntercep
 import me.saif.betterenderchests.lang.locale.LocaleLoader;
 import me.saif.betterenderchests.lang.locale.PlayerLocaleFinder;
 import me.saif.betterenderchests.utils.UpdateChecker;
+import me.saif.betterenderchests.utils.scheduler.BukkitTaskScheduler;
+import me.saif.betterenderchests.utils.scheduler.FoliaTaskScheduler;
+import me.saif.betterenderchests.utils.scheduler.TaskScheduler;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -58,10 +59,20 @@ public final class VariableEnderChests extends JavaPlugin {
         return paper;
     }
 
+    public static boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     public static VariableEnderChestAPI getAPI() {
         return API;
     }
 
+    private TaskScheduler taskScheduler;
     private DataManager dataManager;
     private EnderChestManager enderChestManager;
     private ConverterManager converterManager;
@@ -76,6 +87,7 @@ public final class VariableEnderChests extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.taskScheduler = isFolia() ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this);
         API = new VariableEnderChestAPI(this);
         this.saveDefaultConfig();
 
@@ -151,7 +163,8 @@ public final class VariableEnderChests extends JavaPlugin {
         this.commandManager.registerCommand(new ClearEnderChestCommand(this));
         this.commandManager.registerCommand(new ConversionCommand(this));
         this.commandManager.registerCommand(new EnderChestDebugCommand(this));
-        this.commandManager.registerCommand(new RetrieveEnderContentsCommand(this, "retrieveender", Lists.newArrayList()));
+        this.commandManager
+                .registerCommand(new RetrieveEnderContentsCommand(this, "retrieveender", Lists.newArrayList()));
 
         List<String> aliases = this.getConfig().getStringList("open-enderchest-commands");
 
@@ -167,7 +180,7 @@ public final class VariableEnderChests extends JavaPlugin {
             this.enderChestHook.register();
         }
 
-        ChestSortHook.hook();
+        // ChestSortHook.hook();
         new InteractiveChatHook(this);
         new ShowItemHook(this);
     }
@@ -212,7 +225,6 @@ public final class VariableEnderChests extends JavaPlugin {
             this.enderChestHook.unregister();
     }
 
-
     public DataManager getDataManager() {
         return dataManager;
     }
@@ -239,5 +251,9 @@ public final class VariableEnderChests extends JavaPlugin {
 
     public PlayerLocaleFinder getPlayerLocaleFinder() {
         return playerLocaleFinder;
+    }
+
+    public TaskScheduler getTaskScheduler() {
+        return taskScheduler;
     }
 }
